@@ -11,12 +11,12 @@ RSpec.describe Ability do
     context 'when type is valid' do
       let(:ability_multiplier) { 1.2 }
 
-      context 'and type is weapon' do
-        let(:ability_type) { 'weapon' }
+      context 'and type is attack' do
+        let(:ability_type) { 'attack' }
         let(:ability_item) { Item.new(name: 'weapon-1', type: Item::WEAPON, value: 20) }
 
         describe '#type' do
-          it { expect(subject.type).to eq(Ability::WEAPON) }
+          it { expect(subject.type).to eq(Ability::ATTACK) }
         end
 
         describe '#multiplier' do

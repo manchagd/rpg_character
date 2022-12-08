@@ -1,24 +1,24 @@
 require "rspec"
 require "pry"
-require_relative "../src/models/equipment.rb"
+require_relative "../src/models/inventory.rb"
 require_relative "../src/models/item.rb"
 
-RSpec.describe Equipment do
-  subject { Equipment.new(size: equipment_size, items: equipment_items) }
-  let(:equipment_size) { 10 }
-  let(:equipment_items) { [] }
+RSpec.describe Inventory do
+  subject { Inventory.new(size: inventory_size, items: inventory_items) }
+  let(:inventory_size) { 10 }
+  let(:inventory_items) { [] }
 
   describe 'attributes' do
     describe '#size' do
-      it { expect(subject.size).to eq(equipment_size) }
+      it { expect(subject.size).to eq(inventory_size) }
     end
   end
 
   describe '#available_slots?' do
-    let(:equipment_size) { 1 }
+    let(:inventory_size) { 1 }
 
     context 'when is full' do
-      let(:equipment_items) { [Item.new(name: 'potion-1', type: Item::POTION, value: 20)] }
+      let(:inventory_items) { [Item.new(name: 'potion-1', type: Item::POTION, value: 20)] }
 
       it 'returns false' do
         expect(subject.available_slots?).to be_falsey
@@ -33,18 +33,18 @@ RSpec.describe Equipment do
   end
 
   describe '#store' do
-    let(:equipment_size) { 1 }
+    let(:inventory_size) { 1 }
     let(:item1) { Item.new(name: 'potion-1', type: Item::POTION, value: 20) }
     let(:item2) { Item.new(name: 'potion-2', type: Item::POTION, value: 20) }
 
     context 'when is full' do
-      let(:equipment_items) { [item1] }
+      let(:inventory_items) { [item1] }
 
       it 'returns nil' do
         expect(subject.store(item2)).to be_nil
       end
 
-      it 'dont overflow equipment size' do
+      it 'dont overflow inventory size' do
         subject.store(item2)
         expect(subject.size).to eq(1)
       end
@@ -55,7 +55,7 @@ RSpec.describe Equipment do
         expect(subject.store(item2)).to eq(item2)
       end
 
-      it 'fulfill equipment' do
+      it 'fulfill inventory' do
         subject.store(item2)
         expect(subject.size).to eq(1)
         expect(subject.available_slots?).to be_falsey
@@ -64,12 +64,12 @@ RSpec.describe Equipment do
   end
 
   describe '#pick' do
-    let(:equipment_size) { 2 }
+    let(:inventory_size) { 2 }
     let(:item1) { Item.new(name: 'potion-1', type: Item::POTION, value: 20) }
     let(:item2) { Item.new(name: 'potion-2', type: Item::POTION, value: 20) }
 
     context 'when is full' do
-      let(:equipment_items) { [item1, item2] }
+      let(:inventory_items) { [item1, item2] }
 
       it 'free one slot' do
         subject.pick(1)
@@ -89,10 +89,10 @@ RSpec.describe Equipment do
   end
 
   describe '#open' do
-    let(:equipment_size) { 4 }
+    let(:inventory_size) { 4 }
     let(:item1) { Item.new(name: 'potion-1', type: Item::POTION, value: 20) }
     let(:item2) { Item.new(name: 'potion-2', type: Item::POTION, value: 20) }
-    let(:equipment_items) { [item1, item2, nil, nil] }
+    let(:inventory_items) { [item1, item2, nil, nil] }
 
     it 'shows [item1, nil, nil, nil] after pick(2) ' do
       subject.pick(2)
