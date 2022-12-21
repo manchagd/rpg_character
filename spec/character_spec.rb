@@ -27,7 +27,7 @@ RSpec.describe Character do
   let(:weapon1) { Item.new(name: 'weapon-1', type: Item::WEAPON, value: 20) }
   let(:weapon2) { Item.new(name: 'weapon-2', type: Item::WEAPON, value: 10) }
   let(:potion1) { Item.new(name: 'potion-1', type: Item::POTION, value: 20) }
-  let(:armor2) { Item.new(name: 'armor-1', type: Item::ARMOR, value: 100) }
+  let(:armor2) { Item.new(name: 'armor-2', type: Item::ARMOR, value: 100) }
 
   describe 'attributes' do
     describe '#name' do
@@ -43,18 +43,95 @@ RSpec.describe Character do
     end
 
     describe '#damage_abilities' do
-      it { expect(subject.damage_abilities).to be_instance_of(Array) }
+      it do
+        expect(subject.damage_abilities).to be_instance_of(Array)
+        subject.damage_abilities.each do |ability|
+          expect(ability).to be_instance_of(Ability)
+          expect(ability.type).to eq(Ability::ATTACK)
+        end
+      end
     end
 
     describe '#consumable_abilities' do
-      it { expect(subject.consumable_abilities).to be_instance_of(Array) }
+      it do
+        expect(subject.consumable_abilities).to be_instance_of(Array)
+        subject.consumable_abilities.each do |ability|
+          expect(ability).to be_instance_of(Ability)
+          expect(ability.type).to eq(Ability::CONSUMIBLE)
+          end
+      end
     end
   end
 
   describe '#attack' do
+    let(:attack) { subject.attack(action) }
+
+    context 'when is action 1' do
+      let(:action) { 1 }
+      let(:action_response) do
+        {
+          value: 24.0,
+          type: 'damage',
+          target: 'enemy',
+        }
+      end
+
+      it 'perform damage_ability 1' do
+        expect(attack).to include_json(action_response)
+      end
+    end
+
+    context 'when is action 2' do
+      let(:action) { 2 }
+      let(:action_response) do
+        {
+          value: 15,
+          type: 'damage',
+          target: 'enemy',
+        }
+      end
+
+      it 'perform damage_ability 2' do
+        expect(attack).to include_json(action_response)
+      end
+    end
   end
 
   describe '#consume' do
+    let(:consume) { subject.consume(action) }
+
+    context 'when is action 1' do
+      let(:action) { 1 }
+      let(:action_response) do
+        {
+          value: 24.0,
+          type: 'heal',
+          target: 'self'
+        }
+      end
+
+      it 'perform damage_ability 1' do
+        expect(consume).to include_json(action_response)
+      end
+    end
+
+    context 'when is action 2' do
+      let(:action) { 2 }
+      let(:action_response) do
+        {
+          value: 110,
+          type: 'armor',
+          target: 'self'
+        }
+      end
+
+      it 'perform damage_ability 2' do
+        expect(consume).to include_json(action_response)
+      end
+    end
+  end
+
+  describe '#effects_queue' do
   end
 
 end
